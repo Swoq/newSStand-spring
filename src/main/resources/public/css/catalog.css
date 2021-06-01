@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+    background-color: #f5f5f5
+}
+
+.mt-50 {
+    margin-top: 50px
+}
+
+.mb-50 {
+    margin-bottom: 50px
+}
+
+a {
+    text-decoration: none !important
+}
+
+.description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+}
+
+.cover_img {
+    width: 175px;
+    height: 15vw;
+    object-fit: cover;
+}

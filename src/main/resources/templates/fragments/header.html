@@ -1,0 +1,148 @@
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title></title>
+</head>
+<body>
+<%--    Header--%>
+<div th:fragment="header">
+    <header class="blog-header py-3">
+        <div class="row flex-nowrap justify-content-between align-items-center">
+            <div class="col-4 pt-1 d-flex flex-column justify-content-start">
+                <div class="dropdown mb-2">
+                    <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span th:class="'flag-icon flag-icon-' + ${#locale}"></span>
+
+                        <span th:if='${#locale.toString().equalsIgnoreCase("gb")}'>English</span>
+                        <span th:if='${#locale.toString().equalsIgnoreCase("ru")}'>Russian</span>
+                        <span th:if='${#locale.toString().equalsIgnoreCase("ua")}'>Ukrainian</span>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+                         th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}">
+                        <a class="dropdown-item" th:href="@{${urlBuilder.replaceQueryParam('lang', 'gb').toUriString()}}"><span class="flag-icon flag-icon-gb"></span> English</a>
+                        <a class="dropdown-item" th:href="@{${urlBuilder.replaceQueryParam('lang', 'ru').toUriString()}}"><span class="flag-icon flag-icon-ru"></span> Russian</a>
+                        <a class="dropdown-item" th:href="@{${urlBuilder.replaceQueryParam('lang', 'ua').toUriString()}}"><span class="flag-icon flag-icon-ua"></span> Ukrainian</a>
+                    </div>
+                </div>
+                <a class="btn btn-outline-dark col-4" th:href="@{/catalog}" th:text="#{header.placeholder.catalogBtn}"></a>
+            </div>
+            <div class="col-4 text-center">
+                <a class="blog-header-logo text-dark" th:href="@{/}">NewSStand</a>
+            </div>
+            <div class="col-4 d-flex flex-column justify-content-end align-items-end">
+                <a class="btn btn-sm btn-outline-secondary" th:href="@{/registration}"
+                   th:text="#{header.placeholder.signUpBtn}"
+                   sec:authorize="!isAuthenticated()"></a>
+                <a class="btn btn-sm btn-outline-secondary mt-1" th:href="@{/login}"
+                   th:text="#{header.placeholder.signInBtn}"
+                   sec:authorize="!isAuthenticated()"></a>
+
+                <div sec:authorize="isAuthenticated()">
+                    <h5 class="font-italic text-dark" sec:authentication="name"></h5>
+                    <div class="d-flex justify-content-center">
+                        <button sec:authorize="hasAuthority('ADMIN')" th:text="#{header.placeholder.adminPanelBtn}"
+                                type="button" class="btn btn-sm btn-outline-secondary"
+                                data-toggle="modal" data-target="#adminModal">
+                        </button>
+                        <a th:href="@{/account}" th:text="#{header.placeholder.accountBtn}"
+                           class="btn btn-sm ml-1 btn-outline-secondary" ></a>
+                        <a th:href="@{/logout}" th:text="#{header.placeholder.logoutBtn}"
+                           class="btn btn-sm ml-1 btn-outline-secondary"></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+    <div class="nav-scroller py-1 mb-2">
+        <nav class="nav d-flex justify-content-between">
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=1}" th:text="#{genres.a}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=2}" th:text="#{genres.b}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=3}" th:text="#{genres.c}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=4}" th:text="#{genres.d}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=5}" th:text="#{genres.e}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=6}" th:text="#{genres.f}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=7}" th:text="#{genres.g}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=8}" th:text="#{genres.h}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=9}" th:text="#{genres.i}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=10}" th:text="#{genres.j}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=11}" th:text="#{genres.k}"></a>
+            <a class="p-2 text-muted" th:href="@{/catalog?genres=12}" th:text="#{genres.l}"></a>
+        </nav>
+    </div>
+
+    <div class="modal fade" id="adminModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title align-content-center" id="exampleModalLabel">Admin Panel</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-column">
+                        <a class="btn btn-sm mb-4 btn-outline-secondary" th:href="@{/catalog}" th:text="#{admin.panel.addNewPublication}"></a>
+                        <a class="btn btn-sm mb-4 btn-outline-secondary addPeriodBtn" th:text="#{admin.panel.addNewPeriod}"></a>
+                        <a class="btn btn-sm mb-4 btn-outline-secondary addGenreBtn" th:text="#{admin.panel.addNewGenre}"></a>
+
+                        <form th:action="@{periods/add}" method="post" >
+                            <div class="input-group mb-3">
+                                <input th:placeholder="#{admin.panel.placeholder.newPeriodName}"
+                                       type="hidden" class="form-control addPeriodForm" name="name">
+                                <input th:placeholder="#{admin.panel.placeholder.newPeriodDescription}"
+                                       type="hidden" class="form-control addPeriodForm" name="description">
+                                <div class="input-group-append">
+                                    <input type="hidden" class="btn btn-outline-secondary" id="submitPeriodBtn" value="Submit">
+                                </div>
+                            </div>
+                        </form>
+
+                        <form th:action="@{genres/add}" method="post" >
+                            <div class="input-group mb-3">
+                                <input th:placeholder="#{admin.panel.placeholder.newGenreName}"
+                                       type="hidden" class="form-control addGenreForm" name="name">
+                                <input th:placeholder="#{admin.panel.placeholder.newGenreDescription}"
+                                       type="hidden" class="form-control addGenreForm" name="description">
+                                <div class="input-group-append">
+                                    <input type="hidden" class="btn btn-outline-secondary" id="submitGenreBtn" value="Submit">
+                                </div>
+                            </div>
+                        </form>
+
+                        <form th:action="@{users/block}" method="post">
+                            <div class="input-group mb-3">
+                                <input th:placeholder="#{admin.panel.placeholder.emailToBlock}"
+                                       type="text" class="form-control" name="email">
+                                <div class="input-group-append">
+                                    <button th:text="#{admin.panel.placeholder.blockBtn}"
+                                            class="btn btn-outline-secondary" type="submit" >
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <form th:action="@{users/unblock}" method="post">
+                            <div class="input-group mb-3">
+                                <input th:placeholder="#{admin.panel.placeholder.emailToUnblock}"
+                                       type="text" class="form-control" name="email">
+                                <div class="input-group-append">
+                                    <button th:text="#{admin.panel.placeholder.unblockBtn}"
+                                            class="btn btn-outline-secondary" type="submit" >
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button th:text="#{admin.panel.placeholder.closeBtn}"
+                            type="button" class="btn btn-secondary" data-dismiss="modal" >
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
