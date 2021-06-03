@@ -7,6 +7,7 @@ import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "subscriptions")
@@ -29,9 +30,8 @@ public class Subscription {
     )
     private Long subscriptionId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @ManyToMany(mappedBy = "subscriptions")
+    private List<User> user;
 
     @ManyToOne
     @JoinColumn(name = "rate_id", nullable = false)

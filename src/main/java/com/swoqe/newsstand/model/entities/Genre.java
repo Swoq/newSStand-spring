@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "genres")
@@ -32,12 +33,11 @@ public class Genre {
     private String genreName;
 
     @Size(max=1000)
-    @Lob
+    @Column(columnDefinition = "text")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "publication_id", nullable = false)
-    private Publication publication;
+    @ManyToMany(mappedBy = "genres")
+    private List<Publication> publications;
 
     public Genre(String periodName, String description) {
         this.genreName = periodName;

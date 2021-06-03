@@ -69,7 +69,11 @@ public class User {
 
     private BigDecimal account = BigDecimal.ZERO;
 
-    @OneToMany(mappedBy = "user")
+    @ManyToMany
+    @JoinTable(
+            name = "users_subscriptions",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscription_id"))
     private List<Subscription> subscriptions;
 
     public User(String firstName, String lastName, String password, UserRole userRole, String email) {

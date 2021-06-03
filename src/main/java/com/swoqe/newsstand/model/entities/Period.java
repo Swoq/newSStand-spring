@@ -34,7 +34,7 @@ public class Period {
     private String periodName;
 
     @Size(max=255)
-    @Lob
+    @Column(columnDefinition = "text")
     private String description;
 
     public Period(String periodName, String description) {

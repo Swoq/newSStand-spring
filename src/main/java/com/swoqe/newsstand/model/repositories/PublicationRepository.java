@@ -20,9 +20,8 @@ import java.util.Optional;
 @Transactional
 public interface PublicationRepository extends CrudRepository<Publication, Long> {
     Page<Publication> findAllBy(Pageable pageable);
-    Page<Publication> findAllByTitle(String title, Pageable pageable);
+    Page<Publication> findAllByTitleContainsIgnoreCase(String title, Pageable pageable);
+    Page<Publication> findAllByGenresIn(List<Genre> genres, Pageable pageable);
 
-    Page<Publication> findAllByOrderByRates(Pageable pageable);
-    Page<Publication> findAllByGenresAndTitle(List<Genre> genres, String title, Pageable pageable);
-    Page<Publication> findAllByGenres(List<Genre> genres, Pageable pageable);
+
 }

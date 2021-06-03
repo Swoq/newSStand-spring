@@ -21,14 +21,11 @@ public class PublicationService {
     }
 
     public Page<Publication> getAllPublicationsByName(String title, Pageable paging) {
-        return this.publicationRepository.findAllByTitle(title, paging);
-    }
-
-    public Page<Publication> getAllPublicationsByGenresAndName(List<Genre> genres, String title, Pageable paging) {
-        return this.publicationRepository.findAllByGenresAndTitle(genres, title, paging);
+        return this.publicationRepository.findAllByTitleContainsIgnoreCase(title, paging);
     }
 
     public Page<Publication> getAllPublicationsByGenres(List<Genre> genres, Pageable paging) {
-        return this.publicationRepository.findAllByGenres(genres, paging);
+        return this.publicationRepository.findAllByGenresIn(genres, paging);
     }
+
 }

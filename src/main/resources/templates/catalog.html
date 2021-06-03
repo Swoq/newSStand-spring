@@ -48,8 +48,8 @@
                     <label for="sortBy">Sort By:</label>
                     <select class="form-control" id="sortBy" th:name="sortBy">
                         <option selected value="title">Title</option>
+                        <option value="publicationDate">Publishing date</option>
                         <option disabled value="price">Price</option>
-                        <option value="publication_date">Publishing date</option>
                         <option disabled value="date_before">Published before</option>
                         <option disabled value="date_after">Published after</option>
                     </select>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="col-sm-1 mb-3">
                     <label for="direction">Direction: </label>
-                    <select class="form-control" id="direction" name="direction">
+                    <select class="form-control" id="direction" th:name="d">
                         <option selected value="ASC">ASC</option>
                         <option value="DESC">DESC</option>
                     </select>
@@ -70,10 +70,12 @@
                     <input class="btn btn-outline-dark" id="btnFilterSubmit" type="submit">
                 </div>
             </div>
+        </form>
+        <form method="get" th:action="@{/catalog}">
             <div class="form-row d-flex justify-content-end">
                 <div class="input-group col-sm-3 justify-content-end pr-2">
                     <div class="form-outline">
-                        <input class="form-control" id="form1" name="title" placeholder="Search by Title"
+                        <input class="form-control" id="form1" th:name="title" placeholder="Search by Title"
                                type="search"/>
                     </div>
                     <button class="btn btn-outline-dark" type="submit">
@@ -89,7 +91,7 @@
                     <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
                         <div class="mr-2 mb-3 mb-lg-0">
                             <img alt=""
-                                 class="cover_img" height="150" th:src="@{images/${publication.imagePath}}" width="150">
+                                 class="cover_img" height="150" th:src="@{images/{path}(path=${publication.imagePath})}" width="150">
                         </div>
                         <div class="media-body">
                             <h6 class="media-title font-weight-semibold">
@@ -112,8 +114,10 @@
 
                         </div>
                         <div class="mt-3 mt-lg-0 ml-lg-3 text-center" >
-                            <h3 class="mb-0 font-weight-semibold">$${item.shownPrice}</h3>
-                            <h3 class="mb-0 font-weight-semibold">/${item.shownPeriod}</h3>
+
+                            <h3 th:text="'$' + ${publication.getShownRate('min').price}" class="mb-0 font-weight-semibold"></h3>
+                            <h3 th:text="'\ ' + ${publication.getShownRate('min').period.periodName}"
+                                class="mb-0 font-weight-semibold"></h3>
                             <div>
                                 <i class="fa fa-star"></i> <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i> <i class="fa fa-star"></i>
@@ -138,7 +142,7 @@
                        th:href="@{${urlBuilder.replaceQueryParam('page', currentPage - 1).toUriString()}}">Previous</a>
                 </li>
 
-                <th:block th:each="i : ${#numbers.sequence(0, totalPages, 1)}">
+                <th:block th:each="i : ${#numbers.sequence(1, totalPages, 1)}">
                     <li th:if="${currentPage == i}" class="page-item active">
                         <a th:text="${i}" class="page-link bg-dark border-dark">
                             <span class="sr-only">(current)</span>
