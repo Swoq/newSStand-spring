@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.Duration;
+import java.time.Period;
 
 @Entity
 @Table(name = "periods")
@@ -15,7 +17,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @ToString
-public class Period {
+public class RatePeriod {
 
     @SequenceGenerator(
             name = "period_sequence",
@@ -29,16 +31,21 @@ public class Period {
     )
     private Long periodId;
 
+    @NotBlank(message = "period is mandatory")
+    @Size(min = 1, max=255)
+    private Period period;
+
     @NotBlank(message = "Name is mandatory")
     @Size(min = 1, max=255)
-    private String periodName;
+    private String formalName;
 
     @Size(max=255)
     @Column(columnDefinition = "text")
     private String description;
 
-    public Period(String periodName, String description) {
-        this.periodName = periodName;
+    public RatePeriod(Period period, String formalName, String description) {
+        this.period = period;
+        this.formalName = formalName;
         this.description = description;
     }
 }

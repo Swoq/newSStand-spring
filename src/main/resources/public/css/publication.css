@@ -1,0 +1,5 @@
+.cover_img {
+    width: 350px;
+    height: 30vw;
+    object-fit: cover;
+}

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -28,4 +29,7 @@ public class PublicationService {
         return this.publicationRepository.findAllByGenresIn(genres, paging);
     }
 
+    public Optional<Publication> getPublicationById(Long id) {
+        return this.publicationRepository.findFirstByPublicationId(id);
+    }
 }

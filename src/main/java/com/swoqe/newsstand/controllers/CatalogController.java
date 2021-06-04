@@ -6,6 +6,9 @@ import com.swoqe.newsstand.model.services.GenreService;
 import com.swoqe.newsstand.model.services.PublicationService;
 import com.swoqe.newsstand.util.OrderBy;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +26,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/catalog")
 @AllArgsConstructor
+@Log4j2
 public class CatalogController {
 
     private final PublicationService publicationService;

@@ -1,7 +1,6 @@
 package com.swoqe.newsstand.model.entities;
 
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
@@ -31,7 +30,7 @@ public class Rate implements Comparable<Rate>{
 
     @ManyToOne
     @JoinColumn(name="period_id", nullable=false)
-    private Period period;
+    private RatePeriod ratePeriod;
 
     @ManyToOne
     @JoinColumn(name="publication_id", nullable=false)
@@ -40,8 +39,8 @@ public class Rate implements Comparable<Rate>{
     @Positive
     private BigDecimal price;
 
-    public Rate(Period period, Publication publication, BigDecimal price) {
-        this.period = period;
+    public Rate(RatePeriod ratePeriod, Publication publication, BigDecimal price) {
+        this.ratePeriod = ratePeriod;
         this.publication = publication;
         this.price = price;
     }

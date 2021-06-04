@@ -23,5 +23,5 @@ public interface PublicationRepository extends CrudRepository<Publication, Long>
     Page<Publication> findAllByTitleContainsIgnoreCase(String title, Pageable pageable);
     Page<Publication> findAllByGenresIn(List<Genre> genres, Pageable pageable);
 
-
+    Optional<Publication> findFirstByPublicationId(Long id);
 }

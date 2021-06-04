@@ -5,12 +5,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.Period;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "publications")
@@ -19,8 +20,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-@Builder
-public class Publication {
+public class Publication implements Serializable {
 
     @SequenceGenerator(
             name = "publication_sequence",
@@ -66,7 +66,7 @@ public class Publication {
 
     public Rate getShownRate(String param){
         if(this.rates.isEmpty())
-            return new Rate(new Period("", ""), this, BigDecimal.ZERO);
+            return new Rate(new RatePeriod(Period.ZERO, "", ""), this, BigDecimal.ZERO);
 
         switch (param){
             case "min":
@@ -78,5 +78,4 @@ public class Publication {
         }
         return Collections.min(rates);
     }
-
 }

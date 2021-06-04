@@ -30,18 +30,26 @@ public class Subscription {
     )
     private Long subscriptionId;
 
-    @ManyToMany(mappedBy = "subscriptions")
-    private List<User> user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "rate_id", nullable = false)
     private Rate rate;
 
     @PastOrPresent
-    @NotBlank(message = "StartDate is mandatory")
+    @Column(nullable = false)
     private LocalDate startDate;
 
     @FutureOrPresent
-    @NotBlank(message = "EndDate is mandatory")
+    @Column(nullable = false)
     private LocalDate endDate;
+
+    public Subscription(User user, Rate rate, LocalDate startDate, LocalDate endDate) {
+        this.user = user;
+        this.rate = rate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

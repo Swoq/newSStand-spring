@@ -20,7 +20,6 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "users")
 public class User {
@@ -56,11 +55,6 @@ public class User {
     @Size(min = 1, max=255)
     private String password;
 
-    @Transient
-    @NotBlank(message = "Please confirm the password")
-    @Size(min = 1, max=255)
-    private String matchingPassword;
-
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.COMMON_USER;
 
@@ -69,11 +63,7 @@ public class User {
 
     private BigDecimal account = BigDecimal.ZERO;
 
-    @ManyToMany
-    @JoinTable(
-            name = "users_subscriptions",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "subscription_id"))
+    @OneToMany(mappedBy = "user")
     private List<Subscription> subscriptions;
 
     public User(String firstName, String lastName, String password, UserRole userRole, String email) {
@@ -83,4 +73,17 @@ public class User {
         this.userRole = userRole;
         this.email = email;
     }
+
+    public void addSubscription(Subscription subscription){
+        this.subscriptions.add(subscription);
+    }
+
+    public void deleteSubscription(Subscription subscription){
+        this.subscriptions.remove(subscription);
+    }
+
+    public void accountMinus(BigDecimal number){
+        this.account = this.account.subtract(number);
+    }
+
 }
