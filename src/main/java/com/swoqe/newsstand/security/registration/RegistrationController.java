@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +31,16 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public String register(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+    public String register(@ModelAttribute("user") @Valid User user,
+                           BindingResult bindingResult,
+                           @RequestParam String matchingPassword,
+                           Model model) {
         if(bindingResult.hasErrors())
             return "registration";
-
+        if(!user.getPassword().equals(matchingPassword)) {
+            model.addAttribute("matchError", "Passwords should be the same!");
+            return "registration";
+        }
         registrationService.register(user);
         return "redirect:/login";
     }

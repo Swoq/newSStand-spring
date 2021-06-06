@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.persistence.*;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "rates")
@@ -48,5 +50,16 @@ public class Rate implements Comparable<Rate>{
     @Override
     public int compareTo(@NotNull Rate o) {
         return price.compareTo(o.price);
+    }
+
+    public static List<Rate> createList(List<RatePeriod> periods, List<BigDecimal> prices, Publication publication){
+        if(periods.size() != prices.size())
+            return null;
+        List<Rate> rates = new ArrayList<>();
+        for (int i = 0; i < periods.size(); i++) {
+            Rate rate = new Rate(periods.get(i), publication, prices.get(i));
+            rates.add(rate);
+        }
+        return rates;
     }
 }

@@ -19,4 +19,8 @@ public class GenreService {
     public List<Genre> getAllGenresByIds(List<Long> longs) {
         return this.genreRepository.findAllByGenreIdIn(longs);
     }
+
+    public void addNewGenre(Genre genre) {
+        this.genreRepository.save(genre);
+    }
 }

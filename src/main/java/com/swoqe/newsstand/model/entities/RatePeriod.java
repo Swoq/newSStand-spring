@@ -31,8 +31,6 @@ public class RatePeriod {
     )
     private Long periodId;
 
-    @NotBlank(message = "period is mandatory")
-    @Size(min = 1, max=255)
     private Period period;
 
     @NotBlank(message = "Name is mandatory")

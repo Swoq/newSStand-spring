@@ -38,12 +38,12 @@ public class User {
 
     @NotBlank(message = "First name is mandatory")
     @Size(min = 1, max=255)
-    @Pattern(regexp="^[a-zA-Z]+$", message = "Only letters are allowed")
+    @Pattern(regexp="^[a-zA-Zа-яА-Я]+$", message = "Only letters are allowed")
     private String firstName;
 
     @NotBlank(message = "Last name is mandatory")
     @Size(min = 1, max=255)
-    @Pattern(regexp="^[a-zA-Z]+$", message = "Only letters are allowed")
+    @Pattern(regexp="^[a-zA-Zа-яА-Я]+$", message = "Only letters are allowed")
     private String lastName;
 
     @NotBlank(message = "Email is mandatory")

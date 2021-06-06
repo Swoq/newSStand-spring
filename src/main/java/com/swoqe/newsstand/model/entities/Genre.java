@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class Genre {
 
     @SequenceGenerator(
@@ -32,8 +33,8 @@ public class Genre {
     @Size(min = 1, max=255)
     private String genreName;
 
-    @Size(max=1000)
     @Column(columnDefinition = "text")
+    @Size(max=1000)
     private String description;
 
     @ManyToMany(mappedBy = "genres")
@@ -42,5 +43,9 @@ public class Genre {
     public Genre(String periodName, String description) {
         this.genreName = periodName;
         this.description = description;
+    }
+
+    public static Genre getNewGenre(){
+        return new Genre();
     }
 }

@@ -18,9 +18,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -35,6 +37,7 @@ public class CatalogController {
     @GetMapping
     public String loadAllPublications(
             Model model,
+            HttpServletRequest request,
             @RequestParam(name = "title", required = false) Optional<String> paramOptionalTitle,
             @RequestParam(name = "sortBy", defaultValue = "title") String paramSortBy,
             @RequestParam(name = "genres", required = false) Optional<List<Long>> paramOptionalGenres,
@@ -42,6 +45,14 @@ public class CatalogController {
             @RequestParam(name = "page", defaultValue = "1") int paramPage,
             @RequestParam(name = "size", defaultValue = "5") int paramSize
     ){
+        Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+        if (inputFlashMap != null) {
+            String error = (String) inputFlashMap.get("error");
+            model.addAttribute("error", error);
+            String info = (String) inputFlashMap.get("info");
+            model.addAttribute("info", info);
+        }
+
         OrderBy orderBy = OrderBy.safeValueOf(paramSortBy);
         Sort.Direction direction = Sort.Direction.fromOptionalString(paramD).orElse(Sort.Direction.ASC);
         Sort.Order order = new Sort.Order(direction, orderBy.name()).ignoreCase();

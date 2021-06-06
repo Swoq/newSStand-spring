@@ -19,7 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 public class Publication implements Serializable {
 
     @SequenceGenerator(
@@ -42,9 +41,9 @@ public class Publication implements Serializable {
     @Column(columnDefinition = "text")
     private String description;
 
-    @NotBlank(message = "Publication Date is mandatory")
+    @NotNull(message = "Date is mandatory")
     @PastOrPresent
-    @DateTimeFormat()
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-MM-dd")
     private LocalDate publicationDate;
 
     @NotBlank(message = "Publisher Name is mandatory")

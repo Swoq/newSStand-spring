@@ -1,0 +1,137 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Create publication</title>
+    <meta charset="utf-8">
+    <link href="https://getbootstrap.com/docs/4.6/examples/blog/" rel="canonical">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Playfair&#43;Display:700,900" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"/>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@dashboardcode/bsmultiselect@1.0.0/dist/css/BsMultiSelect.bs4.min.css" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <link th:href="@{/css/header.css}" rel="stylesheet">
+    <link th:href="@{/css/new_publication.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="new-publication-form">
+        <a href="${contextPath}/catalog" class="font-weight-light text-dark mb-3">Back to catalog</a>
+        <form th:action="@{/admin/publications/new}" th:object="${publication}" method="post" >
+<!--        Title-->
+            <input th:field="*{publicationId}" type="hidden">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Title</span>
+                </div>
+                <input th:field="*{title}" type="text" class="form-control" name="title" required>
+            </div>
+            <p th:each="error: ${#fields.errors('title')}"
+               th:text="${error}" class="text-danger self-align-center">Validation error</p>
+<!--        Publisher-->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon2">Publisher</span>
+                </div>
+                <input th:field="*{publisherName}" type="text" class="form-control" name="publisher" required>
+            </div>
+            <p th:each="error: ${#fields.errors('publisherName')}"
+               th:text="${error}" class="text-danger self-align-center">Validation error</p>
+
+<!--        Genres Multiselect-->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Genres</span>
+                </div>
+                <div class="col-sm-10">
+                    <select th:field="*{genres}" class="custom-select form-control" name="genres" id="genreMultiSelect" multiple="multiple" style="display: none">
+                        <option th:each="genre : ${genres}" th:value="${{genre}}" th:text="${genre.genreName}"></option>
+                    </select>
+                </div>
+            </div>
+
+<!--        Publication Date-->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">Publ. date</span>
+                </div>
+                <input th:field="*{publicationDate}" type="date" class="form-control mr-2" name="publication_date" placeholder="Date">
+<!--        Image CDN-->
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon5">Image CDN</span>
+                </div>
+                <input th:field="*{imagePath}" type="text" class="form-control" name="image" required>
+            </div>
+            <p th:each="error: ${#fields.errors('publicationDate')}"
+               th:text="${error}" class="text-danger self-align-center">Validation error</p>
+            <p th:each="error: ${#fields.errors('imagePath')}"
+               th:text="${error}" class="text-danger self-align-center">Validation error</p>
+<!--        Description-->
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Description</span>
+                </div>
+                <textarea th:field="*{description}" class="form-control" name="description"></textarea>
+            </div>
+            <p th:each="error: ${#fields.errors('description')}"
+               th:text="${error}" class="text-danger self-align-center">Validation error</p>
+
+<!--        Period and Price-->
+            <div class="dynamic-stuff">
+<!--                    block to place new periods and prices here-->
+            </div>
+            <p th:if="${error != null}" th:text="${error}" class="text-danger self-align-center">Validation error</p>
+
+            <div class="d-flex flex-column">
+                <p class="btn btn-sm btn-outline-dark add-one ">Add new rate for the publication</p>
+                <button type="submit" class="btn btn-outline-dark btn-lg">Create Publication</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- HIDDEN DYNAMIC ELEMENT TO CLONE -->
+<div class="form-group dynamic-element" style="display:none">
+    <div class="row d-flex flex-row justify-content-center">
+        <div class="col-md-4">
+            <div class="input-group mb-3 my-auto">
+                <input type="number" th:name="prices" class="form-control" placeholder="Price" aria-label="Username" aria-describedby="basic-addon1">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon4">$</span>
+                </div>
+            </div>
+        </div>
+        <p class="my-auto">per</p>
+        <div class="input-group mb-3 col-md-3 my-auto">
+            <select class="custom-select form-control" id="rol" th:name="periods">
+                <option th:each="period : ${periods}"
+                        th:text="${period.formalName}"
+                        th:value="${{period}}" ></option>
+            </select>
+            <div class="input-group-append">
+                <label class="input-group-text" for="rol">Options</label>
+            </div>
+        </div>
+
+        <!-- End of fields-->
+        <button type="button" class="close delete" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>
+<!-- END OF HIDDEN ELEMENT -->
+
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+<script th:src="@{/js/BsMultiSelect.js}"></script>
+<script th:src="@{/js/new_publication.js}"></script>
+<script th:src="@{/js/header.js}"></script>
+</body>
+</html>

@@ -91,7 +91,7 @@
                     <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
                         <div class="mr-2 mb-3 mb-lg-0">
                             <img alt=""
-                                 class="cover_img" height="150" th:src="@{images/{path}(path=${publication.imagePath})}" width="150">
+                                 class="cover_img" height="150" th:src="@{{path}(path=${publication.imagePath})}" width="150">
                         </div>
                         <div class="media-body">
                             <h6 class="media-title font-weight-semibold">
@@ -171,5 +171,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
 <script th:src="@{js/BsMultiSelect.js}"></script>
 <script th:src="@{js/catalog.js}"></script>
+<script th:src="@{js/header.js}"></script>
 </body>
 </html>
