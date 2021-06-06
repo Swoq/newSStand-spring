@@ -4,10 +4,7 @@ import com.swoqe.newsstand.model.entities.Genre;
 import com.swoqe.newsstand.model.entities.Publication;
 import com.swoqe.newsstand.model.entities.Rate;
 import com.swoqe.newsstand.model.entities.RatePeriod;
-import com.swoqe.newsstand.model.services.GenreService;
-import com.swoqe.newsstand.model.services.PublicationService;
-import com.swoqe.newsstand.model.services.RatePeriodService;
-import com.swoqe.newsstand.model.services.RateService;
+import com.swoqe.newsstand.model.services.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
@@ -17,12 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Period;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/admin")
@@ -32,10 +27,11 @@ public class AdministrationController {
 
     private final GenreService genreService;
     private final RatePeriodService ratePeriodService;
-    private final RateService rateService;
+    private final UserService userService;
     private final PublicationService publicationService;
 
-    private final String genreNamePattern = "^[a-zA-Zа-яА-Я0-9-`']+$";
+    private final String VALID_NAME_REGEX = "^[a-zA-Zа-яА-Я0-9-`']+$";
+    private final String VALID_EMAIL_REGEX = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
     @PostMapping("/genres/add")
     public String addGenre(
@@ -109,6 +105,38 @@ public class AdministrationController {
         return "redirect:/catalog";
     }
 
+    @PostMapping("/users/block")
+    public String blockUser(
+            @RequestParam(name = "email") String email,
+            RedirectAttributes redirectAttributes
+    ){
+        if(email.matches(VALID_EMAIL_REGEX) ){
+            String message = this.userService.blockUserByEmail(email);
+            redirectAttributes.addFlashAttribute("info", message);
+        }
+        else{
+            redirectAttributes.addFlashAttribute("error", "Invalid email format!");
+        }
+
+        return "redirect:/catalog";
+    }
+
+    @PostMapping("/users/unblock")
+    public String unblockUser(
+            @RequestParam(name = "email") String email,
+            RedirectAttributes redirectAttributes
+    ){
+        if(email.matches(VALID_EMAIL_REGEX) ){
+            String message = this.userService.unblockUserByEmail(email);
+            redirectAttributes.addFlashAttribute("info", message);
+        }
+        else{
+            redirectAttributes.addFlashAttribute("error", "Invalid email format!");
+        }
+
+        return "redirect:/catalog";
+    }
+
     private String ratesValidation(List<RatePeriod> periods, List<BigDecimal> prices){
         if(periods == null || periods.isEmpty() || prices == null || prices.isEmpty())
             return "Publication must have at least one rate!";
@@ -136,7 +164,7 @@ public class AdministrationController {
             return "Strings cannot be empty!";
         else if (name.length() < 1 || name.length() > 255)
             return "Name length should be between 1 and 255";
-        else if(!name.matches(genreNamePattern))
+        else if(!name.matches(VALID_NAME_REGEX))
             return "Only letters are allowed!";
         return null;
     }

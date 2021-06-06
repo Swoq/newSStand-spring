@@ -60,4 +60,30 @@ public class UserService {
         this.subscriptionRepository.save(subscription);
         return "You have successfully unsubscribed!";
     }
+
+    public String blockUserByEmail(String email) {
+        Optional<User> optional = this.userRepository.findByEmail(email);
+        String message = null;
+        if(optional.isPresent()) {
+            User user = optional.get();
+            user.setLocked(true);
+            message = "User has been successfully blocked!";
+        }
+        else
+            message = "Unable to find user with email: " + email;
+        return message;
+    }
+
+    public String unblockUserByEmail(String email) {
+        Optional<User> optional = this.userRepository.findByEmail(email);
+        String message = null;
+        if(optional.isPresent()) {
+            User user = optional.get();
+            user.setLocked(false);
+            message = "User has been successfully unblocked!";
+        }
+        else
+            message = "Unable to find user with email: " + email;
+        return message;
+    }
 }
