@@ -14,6 +14,7 @@ import java.time.Period;
 @Table(name = "periods")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Getter
 @Setter
 @ToString

@@ -7,12 +7,14 @@ import com.swoqe.newsstand.model.services.UserService;
 import com.swoqe.newsstand.security.entity.MyUserDetails;
 import com.swoqe.newsstand.util.AnswerType;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,9 +31,15 @@ public class AccountController {
 
     @GetMapping
     public String getAccountPage(HttpServletRequest request, Model model, Authentication authentication){
-        MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+        MyUserDetails userDetails;
+        try{
+            userDetails = (MyUserDetails) authentication.getPrincipal();
+        }
+        catch (ClassCastException ignored){
+            userDetails = new MyUserDetails((org.springframework.security.core.userdetails.User) authentication.getPrincipal());
+        }
         User user = userService.getUserById(userDetails.getId())
-                .orElseThrow(() -> new AccessDeniedException("Access Denied!"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
         Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
         if (inputFlashMap != null) {

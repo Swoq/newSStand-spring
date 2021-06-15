@@ -21,6 +21,8 @@
         <a th:href="@{/catalog}" class="font-weight-light text-dark mb-3">Back to catalog</a>
         <form th:action="@{/admin/publications/new}" th:object="${publication}" method="post" >
 <!--        Title-->
+            <input th:field="*{publicationId}" type="hidden">
+            <input th:field="*{rates}" type="hidden">
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1">Title</span>
@@ -46,7 +48,9 @@
                 </div>
                 <div class="col-sm-10">
                     <select th:field="*{genres}" class="custom-select form-control" name="genres" id="genreMultiSelect" multiple="multiple" style="display: none">
-                        <option th:each="genre : ${genres}" th:value="${{genre}}" th:text="${genre.genreName}"></option>
+                        <option th:each="genre : ${genres}"
+                                th:value="${{genre}}"
+                                th:text="${genre.genreName}"></option>
                     </select>
                 </div>
             </div>
@@ -79,13 +83,40 @@
 
 <!--        Period and Price-->
             <div class="dynamic-stuff">
-<!--                    block to place new periods and prices here-->
+                <div th:each="rate : ${publication.rates}" class="form-group dynamic-element">
+                    <div class="row d-flex flex-row justify-content-center">
+                        <div class="col-md-4">
+                            <div class="input-group mb-3 my-auto">
+                                <input th:value="${rate.price}" type="number" th:name="prices" class="form-control" placeholder="Price" aria-label="Username" aria-describedby="basic-addon1">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="my-auto">per</p>
+                        <div class="input-group mb-3 col-md-3 my-auto">
+                            <select class="custom-select form-control" id="rol" th:name="periods">
+                                <option th:each="period : ${periods}"
+                                        th:text="${period.formalName}"
+                                        th:value="${{period}}" th:selected="${period.equals(rate.ratePeriod)}"></option>
+                            </select>
+                            <div class="input-group-append">
+                                <label class="input-group-text" for="rol">Options</label>
+                            </div>
+                        </div>
+
+                        <!-- End of fields-->
+                        <button type="button" class="close delete" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
             </div>
             <p th:if="${error != null}" th:text="${error}" class="text-danger self-align-center">Validation error</p>
 
             <div class="d-flex flex-column">
                 <p class="btn btn-sm btn-outline-dark add-one ">Add new rate for the publication</p>
-                <button type="submit" class="btn btn-outline-dark btn-lg">Create Publication</button>
+                <button type="submit" class="btn btn-outline-dark btn-lg">Update Publication</button>
             </div>
         </form>
     </div>

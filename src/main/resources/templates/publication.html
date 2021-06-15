@@ -21,15 +21,15 @@
 
         <div class="col-md-12">
             <div class="card card-body mt-2 flex-row mb-3">
-                <div class="mr-2 mb-3 mb-lg-0">
-                    <img th:src="@{{path}(path=${publication.imagePath})}"
+                <div th:with='prefix=${publication.imagePath.startsWith("http") ? "" : "/"}' class="mr-2 mb-3 mb-lg-0">
+                    <img th:src='@{{prefix}{path}(prefix=${prefix}, path=${publication.imagePath})}'
                          class="cover_img " width="300" height="300" alt="">
                 </div>
                 <div class="pricing-header pl-3">
+                    <a sec:authorize="hasAuthority('ADMIN')"
+                       th:href="@{/admin/publications/edit/{id}(id=${publication.publicationId})}"
+                       class="fa fa-pencil" aria-hidden="true" style="text-align: end; margin-bottom: 0"></a>
                     <p th:text="'Dated: ' + ${publication.publicationDate}" class="text-muted" style="text-align: end; margin-bottom: 0">
-                        <a sec:authorize="hasAuthority('ADMIN')"
-                           th:href="@{/publication/edit/{id}(id=${publication.publicationId})}"
-                           class="fa fa-pencil" aria-hidden="true"></a>
                     </p>
                     <h1 th:text="${publication.title}" class="display-4"></h1>
                     <hr/>

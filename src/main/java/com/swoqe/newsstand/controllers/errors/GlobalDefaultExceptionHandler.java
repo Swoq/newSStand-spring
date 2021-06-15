@@ -2,15 +2,15 @@ package com.swoqe.newsstand.controllers.errors;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @ControllerAdvice
 @Log4j2
@@ -37,13 +37,17 @@ class GlobalDefaultExceptionHandler {
   }
 
   @ExceptionHandler(value = Exception.class)
-  public String defaultErrorHandler(Model model, Exception e) throws Exception {
-
-    if (AnnotationUtils.findAnnotation
-                (e.getClass(), ResponseStatus.class) != null)
+  public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+    ModelAndView mav = new ModelAndView();
+    if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null)
       throw e;
+
+    if(e instanceof MethodArgumentTypeMismatchException)
+      return this.defaultErrorHandler(req, new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_ERROR_MSG));
+
+    e.printStackTrace();
     log.error(e);
-    model.addAttribute("message", INTERNAL_ERROR_MSG);
-    return DEFAULT_ERROR_VIEW;
+    mav.addObject("message", INTERNAL_ERROR_MSG);
+    return mav;
   }
 }

@@ -35,6 +35,13 @@ public class MyUserDetails implements UserDetails {
         this.enable = user.isEnable();
     }
 
+    public MyUserDetails(org.springframework.security.core.userdetails.User user){
+        this.password = user.getPassword();
+        this.email = user.getUsername();
+        this.locked = !user.isAccountNonLocked();
+        this.enable = user.isEnabled();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(userRole.name());

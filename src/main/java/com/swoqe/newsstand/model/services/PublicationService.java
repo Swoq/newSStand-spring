@@ -37,7 +37,7 @@ public class PublicationService {
     }
 
     @Transactional
-    public void savePublicationWithRates(Publication publication, List<Rate> rates){
+    public void savePublicationWithRates(Publication publication, List<Rate> rates) {
         this.publicationRepository.save(publication);
         this.rateService.saveAllRates(rates);
     }

@@ -5,7 +5,6 @@ import com.swoqe.newsstand.model.entities.Subscription;
 import com.swoqe.newsstand.model.entities.User;
 import com.swoqe.newsstand.model.repositories.SubscriptionRepository;
 import com.swoqe.newsstand.model.repositories.UserRepository;
-import com.swoqe.newsstand.util.AnswerType;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -67,6 +63,7 @@ public class UserService {
         if(optional.isPresent()) {
             User user = optional.get();
             user.setLocked(true);
+            userRepository.save(user);
             message = "User has been successfully blocked!";
         }
         else
@@ -80,6 +77,7 @@ public class UserService {
         if(optional.isPresent()) {
             User user = optional.get();
             user.setLocked(false);
+            userRepository.save(user);
             message = "User has been successfully unblocked!";
         }
         else

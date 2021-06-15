@@ -45,7 +45,4 @@ public class Genre {
         this.description = description;
     }
 
-    public static Genre getNewGenre(){
-        return new Genre();
-    }
 }

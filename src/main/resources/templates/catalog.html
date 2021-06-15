@@ -89,9 +89,9 @@
             <div class="col-md-12">
                 <div class="card card-body mt-3" th:each="publication : ${publications}">
                     <div class="media align-items-center align-items-lg-start text-center text-lg-left flex-column flex-lg-row">
-                        <div class="mr-2 mb-3 mb-lg-0">
+                        <div th:with='prefix=${publication.imagePath.startsWith("http") ? "" : "/"}' class="mr-2 mb-3 mb-lg-0" >
                             <img alt=""
-                                 class="cover_img" height="150" th:src="@{{path}(path=${publication.imagePath})}" width="150">
+                                 class="cover_img" height="150" th:src="@{{prefix}{path}(prefix=${prefix}, path=${publication.imagePath})}" width="150">
                         </div>
                         <div class="media-body">
                             <h6 class="media-title font-weight-semibold">
