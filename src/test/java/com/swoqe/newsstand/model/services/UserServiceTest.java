@@ -43,11 +43,11 @@ class UserServiceTest {
     private SubscriptionRepository subscriptionRepository;
 
     @BeforeEach
-    private void init(){
-       user = new User("f", "f", "fas", UserRole.COMMON_USER, "email@gmailc.com");
-       publication = new Publication(3L, "Title3", "Desc", LocalDate.now(), "Publ", "/path", List.of(), List.of());
-       rate = new Rate(1L, new RatePeriod(Period.ZERO, "", ""), publication, BigDecimal.valueOf(10L));
-       subscription = new Subscription(user, rate, LocalDate.now(), LocalDate.now());
+    private void init() {
+        user = new User("f", "f", "fas", UserRole.COMMON_USER, "email@gmailc.com");
+        publication = new Publication(3L, "Title3", "Desc", LocalDate.now(), "Publ", "/path", List.of(), List.of());
+        rate = new Rate(1L, new RatePeriod(Period.ZERO, "", ""), publication, BigDecimal.valueOf(10L));
+        subscription = new Subscription(user, rate, LocalDate.now(), LocalDate.now());
     }
 
     @Test

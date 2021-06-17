@@ -3,7 +3,6 @@ package com.swoqe.newsstand.model.services;
 import com.swoqe.newsstand.model.entities.Publication;
 import com.swoqe.newsstand.model.entities.Rate;
 import com.swoqe.newsstand.model.entities.RatePeriod;
-import com.swoqe.newsstand.model.repositories.PublicationRepository;
 import com.swoqe.newsstand.model.repositories.RateRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 

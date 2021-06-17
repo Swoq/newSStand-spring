@@ -12,10 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 class GenreServiceTest {
@@ -28,10 +25,12 @@ class GenreServiceTest {
 
     @Test
     void getAllGenres() {
-        List<Genre> expect = List.of(new Genre("genre1", "description1"),
+        List<Genre> expect = List.of(
+                new Genre("genre1", "description1"),
                 new Genre("genre2", "description2"),
                 new Genre("genre3", "description3"),
-                new Genre("genre4", "description4"));
+                new Genre("genre4", "description4")
+        );
         doReturn(expect).when(genreRepository).findAll();
 
         List<Genre> received = genreService.getAllGenres();
@@ -40,10 +39,12 @@ class GenreServiceTest {
 
     @Test
     void getAllGenresByIds() {
-        List<Genre> expected = List.of(new Genre(1L,"genre1", "description1", List.of()),
-                new Genre(2L,"genre1", "description1", List.of()),
-                new Genre(3L,"genre1", "description1", List.of()),
-                new Genre(4L,"genre1", "description1", List.of()));
+        List<Genre> expected = List.of(
+                new Genre(1L, "genre1", "description1", List.of()),
+                new Genre(2L, "genre1", "description1", List.of()),
+                new Genre(3L, "genre1", "description1", List.of()),
+                new Genre(4L, "genre1", "description1", List.of())
+        );
         List<Long> longs = List.of(1L, 2L, 3L, 4L);
         doReturn(expected).when(genreRepository).findAllByGenreIdIn(longs);
 
@@ -53,7 +54,7 @@ class GenreServiceTest {
 
     @Test
     void addNewGenre() {
-        Genre genre = new Genre(2L,"genre1", "description1", List.of());
+        Genre genre = new Genre(2L, "genre1", "description1", List.of());
 
         ArgumentCaptor<Genre> genreArgumentCaptor = ArgumentCaptor.forClass(Genre.class);
         doReturn(genre).when(genreRepository).save(genreArgumentCaptor.capture());

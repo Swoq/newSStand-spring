@@ -2,7 +2,6 @@ package com.swoqe.newsstand.controllers;
 
 import com.swoqe.newsstand.model.entities.Publication;
 import com.swoqe.newsstand.model.services.PublicationService;
-import com.swoqe.newsstand.model.services.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

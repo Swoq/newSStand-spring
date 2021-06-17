@@ -8,7 +8,6 @@ import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Entity
@@ -18,7 +17,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @ToString
-public class Rate implements Comparable<Rate>{
+public class Rate implements Comparable<Rate> {
 
     @SequenceGenerator(
             name = "rate_sequence",
@@ -33,11 +32,11 @@ public class Rate implements Comparable<Rate>{
     private Long rateId;
 
     @ManyToOne
-    @JoinColumn(name="period_id", nullable=false)
+    @JoinColumn(name = "period_id", nullable = false)
     private RatePeriod ratePeriod;
 
     @ManyToOne
-    @JoinColumn(name="publication_id", nullable=false)
+    @JoinColumn(name = "publication_id", nullable = false)
     private Publication publication;
 
     @Positive
@@ -49,33 +48,25 @@ public class Rate implements Comparable<Rate>{
         this.price = price;
     }
 
-    public Rate(Rate rate){
-        this.rateId = rate.getRateId();
-        this.publication = rate.getPublication();
-        this.ratePeriod = rate.getRatePeriod();
-        this.price = rate.getPrice();
-    }
-
     @Override
     public int compareTo(@NotNull Rate o) {
         return price.compareTo(o.price);
     }
 
     public static List<Rate> createNewList(List<RatePeriod> periods, List<BigDecimal> prices, Publication publication) {
-        if(periods.size() != prices.size())
+        if (periods.size() != prices.size())
             return null;
         List<Rate> rates = new ArrayList<>();
         for (int i = 0; i < periods.size(); i++) {
             RatePeriod p = periods.get(i);
             Optional<Rate> existingRate = Optional.empty();
-            if(publication.getRates() != null)
+            if (publication.getRates() != null)
                 existingRate = publication.getRates().stream()
                         .filter((s) -> s.getRatePeriod().equals(p)).findAny();
-            if(existingRate.isPresent()) {
+            if (existingRate.isPresent()) {
                 Rate rate = existingRate.get();
                 rates.add(new Rate(rate.getRateId(), p, publication, prices.get(i)));
-            }
-            else
+            } else
                 rates.add(new Rate(p, publication, prices.get(i)));
         }
         return rates;

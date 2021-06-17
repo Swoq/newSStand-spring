@@ -16,15 +16,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.awt.print.Pageable;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -47,28 +45,151 @@ class CatalogControllerTest {
 
 
     @BeforeEach
-    private void init(){
+    private void init() {
         publications = List.of(
                 new Publication(1L, "Title1", "Desc", LocalDate.now(), "Publ", "/path", List.of(), List.of()),
                 new Publication(2L, "Title2", "Desc", LocalDate.now(), "Publ", "/path", List.of(), List.of()),
                 new Publication(3L, "Title3", "Desc", LocalDate.now(), "Publ", "/path", List.of(), List.of()),
                 new Publication(4L, "Title4", "Desc", LocalDate.now(), "Publ", "/path", List.of(), List.of())
         );
-        genres = List.of(new Genre(1L,"genre1", "description1", List.of()),
-                new Genre(2L,"genre1", "description1", List.of()),
-                new Genre(3L,"genre1", "description1", List.of()),
-                new Genre(4L,"genre1", "description1", List.of()));
+        genres = List.of(new Genre(1L, "genre1", "description1", List.of()),
+                new Genre(2L, "genre1", "description1", List.of()),
+                new Genre(3L, "genre1", "description1", List.of()),
+                new Genre(4L, "genre1", "description1", List.of()));
     }
 
     @Test
     @DisplayName("GET /catalog")
-    void loadAllPublications() throws Exception {
+    void loadAllPublicationsByDefault() throws Exception {
         Page<Publication> page = new PageImpl<>(publications);
         given(publicationService.getAllPublications(any())).willReturn(page);
         given(genreService.getAllGenres()).willReturn(genres);
 
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
-        mockMvc.perform(get("/catalog", 1L))
+        mockMvc.perform(get("/catalog").flashAttr("info", ""))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf(String.valueOf(textHtml))))
+                .andExpect(model().attribute("publications", publications))
+                .andExpect(model().attribute("genres", genres));
+
+    }
+
+    @Test
+    @DisplayName("GET /catalog?page=1&size=5")
+    void loadAllPublicationsWithPageAndSize() throws Exception {
+        Page<Publication> page = new PageImpl<>(publications);
+        given(publicationService.getAllPublications(any())).willReturn(page);
+        given(genreService.getAllGenres()).willReturn(genres);
+
+        MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
+        mockMvc.perform(get("/catalog")
+                .param("page", "1")
+                .param("size", "5")
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf(String.valueOf(textHtml))))
+                .andExpect(model().attribute("publications", publications))
+                .andExpect(model().attribute("genres", genres));
+
+    }
+
+    @Test
+    @DisplayName("GET /catalog?page=1&size=5&d=asc&sortBy=title")
+    void loadAllPublicationsWithPageAndSizeAndDirectionAndSortBy() throws Exception {
+        Page<Publication> page = new PageImpl<>(publications);
+        given(publicationService.getAllPublications(any())).willReturn(page);
+        given(genreService.getAllGenres()).willReturn(genres);
+
+        MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
+        mockMvc.perform(
+                get("/catalog")
+                        .param("page", "1")
+                        .param("size", "5")
+                        .param("d", "asc")
+                        .param("sortBy", "title")
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf(String.valueOf(textHtml))))
+                .andExpect(model().attribute("publications", publications))
+                .andExpect(model().attribute("genres", genres));
+
+    }
+
+    @Test
+    @DisplayName("GET /catalog?page=1&size=5&d=asc&sortBy=title&genres=[]")
+    void loadAllPublicationsWithPageAndSizeAndDirectionAndSortByAndGenres() throws Exception {
+        Page<Publication> page = new PageImpl<>(publications);
+        List<Long> ids = genres.stream()
+                .map(Genre::getGenreId).collect(Collectors.toList());
+        given(publicationService.getAllPublicationsByGenres(any(), any())).willReturn(page);
+        given(genreService.getAllGenresByIds(ids)).willReturn(genres);
+        given(genreService.getAllGenres()).willReturn(genres);
+
+        MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
+        mockMvc.perform(
+                get("/catalog")
+                        .param("page", "1")
+                        .param("size", "5")
+                        .param("d", "asc")
+                        .param("sortBy", "title").param("genres", "")
+                        .param("genres", "1")
+                        .param("genres", "2")
+                        .param("genres", "3")
+                        .param("genres", "4")
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf(String.valueOf(textHtml))))
+                .andExpect(model().attribute("publications", publications))
+                .andExpect(model().attribute("genres", genres));
+
+    }
+
+    @Test
+    @DisplayName("GET /catalog?page=1&size=5&d=asc&sortBy=title&genres=[]&title=test")
+    void loadAllPublicationsWithPageAndSizeAndDirectionAndSortByAndGenresAndTitle() throws Exception {
+        Page<Publication> page = new PageImpl<>(publications);
+        List<Long> ids = genres.stream()
+                .map(Genre::getGenreId).collect(Collectors.toList());
+        given(publicationService.getAllPublicationsByGenres(any(), any())).willReturn(page);
+        given(genreService.getAllGenresByIds(ids)).willReturn(genres);
+        given(genreService.getAllGenres()).willReturn(genres);
+
+        MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
+        mockMvc.perform(
+                get("/catalog")
+                        .param("page", "1")
+                        .param("size", "5")
+                        .param("d", "asc")
+                        .param("sortBy", "title").param("genres", "")
+                        .param("genres", "1")
+                        .param("genres", "2")
+                        .param("genres", "3")
+                        .param("genres", "4")
+                        .param("title", "test")
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.valueOf(String.valueOf(textHtml))))
+                .andExpect(model().attribute("publications", publications))
+                .andExpect(model().attribute("genres", genres));
+
+    }
+
+    @Test
+    @DisplayName("GET /catalog?page=1&size=5&d=asc&sortBy=title&title=test")
+    void loadAllPublicationsWithPageAndSizeAndDirectionAndSortByAndTitle() throws Exception {
+        Page<Publication> page = new PageImpl<>(publications);
+        given(publicationService.getAllPublicationsByName(eq("test"), any())).willReturn(page);
+        given(genreService.getAllGenres()).willReturn(genres);
+
+        MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
+        mockMvc.perform(
+                get("/catalog")
+                        .param("page", "1")
+                        .param("size", "5")
+                        .param("d", "asc")
+                        .param("sortBy", "title").param("genres", "")
+                        .param("title", "test")
+        )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.valueOf(String.valueOf(textHtml))))
                 .andExpect(model().attribute("publications", publications))

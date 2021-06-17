@@ -23,7 +23,7 @@ The system administrator has the rights to:
 ![Header Image](/src/main/resources/public/images/examples/main.png?raw=true)
 
 ## Authorized and Localized Main Page:
-![Header Image](/src/main/resources/static//loc_main.png?raw=true)
+![Header Image](/src/main/resources/public/images/examples/loc_main.png?raw=true)
 
 ## Catalog Page ex.1:
 ![Header Image](/src/main/resources/public/images/examples/catalog1.png?raw=true)

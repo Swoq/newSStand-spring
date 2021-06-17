@@ -11,20 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -40,7 +34,7 @@ class AccountControllerTest {
     @Test
     @WithMockUser(value = "common", authorities = "COMMON_USER")
     @DisplayName("GET /user/account")
-    void getAccountPage() throws Exception{
+    void getAccountPage() throws Exception {
         User user = new User("f", "f", "fas", UserRole.COMMON_USER, "email@gmailc.com");
         given(userService.getUserById(any())).willReturn(Optional.of(user));
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
@@ -52,7 +46,7 @@ class AccountControllerTest {
     @Test
     @WithMockUser(value = "common", authorities = "COMMON_USER")
     @DisplayName("GET /user/account THROW")
-    void shouldThrowNotFound() throws Exception{
+    void shouldThrowNotFound() throws Exception {
         given(userService.getUserById(any())).willReturn(Optional.empty());
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/user/account"))
@@ -63,7 +57,7 @@ class AccountControllerTest {
 
     @Test
     @DisplayName("GET /user/account REDIRECT")
-    void noAccess() throws Exception{
+    void noAccess() throws Exception {
         mockMvc.perform(get("/user/account"))
                 .andExpect(status().isFound());
     }

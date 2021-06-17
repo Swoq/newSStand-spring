@@ -1,10 +1,6 @@
 package com.swoqe.newsstand.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.swoqe.newsstand.model.entities.*;
-import com.swoqe.newsstand.model.services.PublicationService;
 import com.swoqe.newsstand.model.services.RateService;
 import com.swoqe.newsstand.model.services.SubscriptionService;
 import com.swoqe.newsstand.model.services.UserService;
@@ -28,14 +24,11 @@ import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @SpringBootTest
 @AutoConfigureMockMvc

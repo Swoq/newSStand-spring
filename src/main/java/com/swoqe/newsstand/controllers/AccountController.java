@@ -2,13 +2,10 @@ package com.swoqe.newsstand.controllers;
 
 import com.swoqe.newsstand.model.entities.Subscription;
 import com.swoqe.newsstand.model.entities.User;
-import com.swoqe.newsstand.model.services.SubscriptionService;
 import com.swoqe.newsstand.model.services.UserService;
 import com.swoqe.newsstand.security.entity.MyUserDetails;
-import com.swoqe.newsstand.util.AnswerType;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
