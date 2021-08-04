@@ -65,7 +65,7 @@ class AdministrationControllerTest {
                 .andExpect(flash().attribute("info", "New genre for publications has been successfully added"));
 
         ArgumentCaptor<Genre> genreArgumentCaptor = ArgumentCaptor.forClass(Genre.class);
-        verify(genreService).addNewGenre(genreArgumentCaptor.capture());
+        verify(genreService).save(genreArgumentCaptor.capture());
 
         Genre genre = genreArgumentCaptor.getValue();
         assertThat(name).isEqualTo(genre.getGenreName());
@@ -149,7 +149,7 @@ class AdministrationControllerTest {
                 .andExpect(flash().attribute("info", "New period for rates has been successfully added"));
 
         ArgumentCaptor<RatePeriod> ratePeriodArgumentCaptor = ArgumentCaptor.forClass(RatePeriod.class);
-        verify(ratePeriodService).addNewRatePeriod(ratePeriodArgumentCaptor.capture());
+        verify(ratePeriodService).save(ratePeriodArgumentCaptor.capture());
 
         RatePeriod ratePeriod = ratePeriodArgumentCaptor.getValue();
         assertThat(name).isEqualTo(ratePeriod.getFormalName());
@@ -255,8 +255,8 @@ class AdministrationControllerTest {
                 new RatePeriod(2L, Period.ZERO, "", ""),
                 new RatePeriod(3L, Period.ZERO, "", ""),
                 new RatePeriod(4L, Period.ZERO, "", ""));
-        given(genreService.getAllGenres()).willReturn(genres);
-        given(ratePeriodService.getAllRatePeriods()).willReturn(periods);
+        given(genreService.findAll()).willReturn(genres);
+        given(ratePeriodService.findAll()).willReturn(periods);
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/admin/publications/new"))
                 .andExpect(status().isOk())
@@ -281,9 +281,9 @@ class AdministrationControllerTest {
                 new RatePeriod(4L, Period.ZERO, "", ""));
         Long id = 1L;
         Publication publication = new Publication(1L, "Title4", "Desc", LocalDate.now(), "Publ", "/path", List.of(), List.of());
-        given(publicationService.getPublicationById(id)).willReturn(Optional.of(publication));
-        given(genreService.getAllGenres()).willReturn(genres);
-        given(ratePeriodService.getAllRatePeriods()).willReturn(periods);
+        given(publicationService.findById(id)).willReturn(Optional.of(publication));
+        given(genreService.findAll()).willReturn(genres);
+        given(ratePeriodService.findAll()).willReturn(periods);
 
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/admin/publications/edit/{id}", id))
@@ -299,7 +299,7 @@ class AdministrationControllerTest {
     @DisplayName(value = "GET /admin/publications/edit/{id}")
     void getEditPublicationPageNotFound() throws Exception {
         Long id = 1L;
-        given(publicationService.getPublicationById(id)).willReturn(Optional.empty());
+        given(publicationService.findById(id)).willReturn(Optional.empty());
 
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/admin/publications/edit/{id}", id))

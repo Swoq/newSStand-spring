@@ -31,7 +31,7 @@ class RatePeriodServiceTest {
         final RatePeriod given = new RatePeriod(1L, Period.ZERO, "", "");
         given(repository.findById(id)).willReturn(Optional.of(given));
 
-        final Optional<RatePeriod> expected = service.getOneById(id);
+        final Optional<RatePeriod> expected = service.findById(id);
         assertThat(expected).isNotNull();
     }
 
@@ -40,7 +40,7 @@ class RatePeriodServiceTest {
         final RatePeriod given = new RatePeriod(1L, Period.ZERO, "", "");
         given(repository.save(given)).willAnswer(invocation -> invocation.getArgument(0));
 
-        service.addNewRatePeriod(given);
+        service.save(given);
 
         ArgumentCaptor<RatePeriod> ratePeriodArgumentCaptor = ArgumentCaptor.forClass(RatePeriod.class);
         verify(repository).save(ratePeriodArgumentCaptor.capture());
@@ -59,7 +59,7 @@ class RatePeriodServiceTest {
 
         given(repository.findAll()).willReturn(given);
 
-        List<RatePeriod> received = service.getAllRatePeriods();
+        List<RatePeriod> received = service.findAll();
 
         assertThat(received).isEqualTo(given);
     }

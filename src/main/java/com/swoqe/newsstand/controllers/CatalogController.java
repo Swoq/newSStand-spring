@@ -7,8 +7,6 @@ import com.swoqe.newsstand.model.services.PublicationService;
 import com.swoqe.newsstand.util.OrderBy;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +42,7 @@ public class CatalogController {
             @RequestParam(name = "d", defaultValue = "asc") String paramD,
             @RequestParam(name = "page", defaultValue = "1") int paramPage,
             @RequestParam(name = "size", defaultValue = "5") int paramSize
-    ){
+    ) {
         Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
         if (inputFlashMap != null) {
             String error = (String) inputFlashMap.get("error");
@@ -56,26 +54,25 @@ public class CatalogController {
         OrderBy orderBy = OrderBy.safeValueOf(paramSortBy);
         Sort.Direction direction = Sort.Direction.fromOptionalString(paramD).orElse(Sort.Direction.ASC);
         Sort.Order order = new Sort.Order(direction, orderBy.name()).ignoreCase();
-        Pageable paging = PageRequest.of(paramPage-1, paramSize, Sort.by(order));
+        Pageable paging = PageRequest.of(paramPage - 1, paramSize, Sort.by(order));
 
         Page<Publication> publicationPage;
         if (paramOptionalGenres.isEmpty()) {
             if (paramOptionalTitle.isEmpty())
-                publicationPage = this.publicationService.getAllPublications(paging);
+                publicationPage = this.publicationService.findAll(paging);
             else
-                publicationPage = this.publicationService.getAllPublicationsByName(paramOptionalTitle.get(), paging);
-        }
-        else {
-            List<Genre> genres = genreService.getAllGenresByIds(paramOptionalGenres.get());
-            publicationPage = this.publicationService.getAllPublicationsByGenres(genres, paging);
+                publicationPage = this.publicationService.findAllByTitle(paramOptionalTitle.get(), paging);
+        } else {
+            List<Genre> genres = genreService.findAllByIds(paramOptionalGenres.get());
+            publicationPage = this.publicationService.findAllByGenres(genres, paging);
         }
 
         List<Publication> publications = publicationPage.getContent();
-        model.addAttribute("currentPage", publicationPage.getNumber()+1);
+        model.addAttribute("currentPage", publicationPage.getNumber() + 1);
         model.addAttribute("totalItems", publicationPage.getTotalElements());
         model.addAttribute("totalPages", publicationPage.getTotalPages());
         model.addAttribute("publications", publications);
-        List<Genre> allGenres = genreService.getAllGenres();
+        List<Genre> allGenres = genreService.findAll();
         model.addAttribute("genres", allGenres);
         return "catalog";
     }

@@ -42,7 +42,7 @@ class RateServiceTest {
 
         given(repository.findById(id)).willReturn(Optional.of(rate));
 
-        final Optional<Rate> expected = service.getRateById(id);
+        final Optional<Rate> expected = service.findById(id);
 
         assertThat(expected).isNotNull();
     }
@@ -56,7 +56,7 @@ class RateServiceTest {
                 new Rate(3L, new RatePeriod(Period.ZERO, "", ""), publication, BigDecimal.ZERO)
         );
 
-        service.saveAllRates(rates);
+        service.saveAll(rates);
 
         verify(repository).saveAll(rateCaptor.capture());
         List<Rate> capturedRates = rateCaptor.getValue();

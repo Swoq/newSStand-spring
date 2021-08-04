@@ -26,15 +26,14 @@ public class AccountController {
     private final UserService userService;
 
     @GetMapping
-    public String getAccountPage(HttpServletRequest request, Model model, Authentication authentication){
+    public String getAccountPage(HttpServletRequest request, Model model, Authentication authentication) {
         MyUserDetails userDetails;
-        try{
+        try {
             userDetails = (MyUserDetails) authentication.getPrincipal();
-        }
-        catch (ClassCastException ignored){
+        } catch (ClassCastException ignored) {
             userDetails = new MyUserDetails((org.springframework.security.core.userdetails.User) authentication.getPrincipal());
         }
-        User user = userService.getUserById(userDetails.getId())
+        User user = userService.findById(userDetails.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
 
         Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);

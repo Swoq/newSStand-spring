@@ -63,7 +63,7 @@ class PublicationServiceTest {
         Pageable paging = PageRequest.of(0, 5, Sort.unsorted());
         doReturn(page).when(repository).findAllBy(paging);
 
-        Page<Publication> received = service.getAllPublications(paging);
+        Page<Publication> received = service.findAll(paging);
 
         Assertions.assertEquals(4, received.getContent().size(), "getAllPublications should return 4 genres");
     }
@@ -77,7 +77,7 @@ class PublicationServiceTest {
         ArgumentCaptor<Pageable> pageableArgumentCaptor = ArgumentCaptor.forClass(Pageable.class);
         doReturn(page).when(repository).
                 findAllByTitleContainsIgnoreCase(stringArgumentCaptor.capture(), pageableArgumentCaptor.capture());
-        Page<Publication> allPublicationsByName = service.getAllPublicationsByName("", paging);
+        Page<Publication> allPublicationsByName = service.findAllByTitle("", paging);
 
         Pageable captured = pageableArgumentCaptor.getValue();
         assertThat(captured).isEqualTo(paging);
@@ -93,7 +93,7 @@ class PublicationServiceTest {
                 new Genre("genre3", "description3"),
                 new Genre("genre4", "description4"));
 
-        service.getAllPublicationsByGenres(genres, paging);
+        service.findAllByGenres(genres, paging);
 
         verify(repository).findAllByGenresIn(genreCaptor.capture(), eq(paging));
         List<Genre> captured = genreCaptor.getValue();
@@ -108,7 +108,7 @@ class PublicationServiceTest {
         Publication publication = new Publication(3L, "Title3", "Desc", LocalDate.now(), "Publ", "/path", List.of(), List.of());
         Long id = 1L;
         doReturn(Optional.of(publication)).when(repository).findFirstByPublicationId(id);
-        Publication received = service.getPublicationById(id).orElse(null);
+        Publication received = service.findById(id).orElse(null);
 
         ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         verify(repository).findFirstByPublicationId(longArgumentCaptor.capture());
@@ -131,7 +131,7 @@ class PublicationServiceTest {
 
         ArgumentCaptor<Publication> publicationArgumentCaptor = ArgumentCaptor.forClass(Publication.class);
         verify(repository).save(publicationArgumentCaptor.capture());
-        verify(rateService).saveAllRates(rateCaptor.capture());
+        verify(rateService).saveAll(rateCaptor.capture());
 
         Publication capturedPublication = publicationArgumentCaptor.getValue();
         List<Rate> capturedRates = rateCaptor.getValue();

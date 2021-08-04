@@ -18,8 +18,8 @@ public class PublicationController {
     private final PublicationService publicationService;
 
     @RequestMapping("publication/{id}")
-    public String getPublicationPage(@PathVariable Long id, Model model){
-        Publication publication = this.publicationService.getPublicationById(id)
+    public String getPublicationPage(@PathVariable Long id, Model model) {
+        Publication publication = this.publicationService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find publication!"));
         model.addAttribute("publication", publication);
         return "publication";

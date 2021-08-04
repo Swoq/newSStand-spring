@@ -35,7 +35,7 @@ class SubscriptionServiceTest {
 
         given(repository.findById(1L)).willReturn(Optional.of(subscription));
 
-        Optional<Subscription> received = service.getSubscriptionById(1L);
+        Optional<Subscription> received = service.findById(1L);
 
         assertThat(received).isNotNull();
     }

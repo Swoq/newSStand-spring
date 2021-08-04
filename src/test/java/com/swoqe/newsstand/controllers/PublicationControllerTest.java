@@ -39,7 +39,7 @@ class PublicationControllerTest {
                 LocalDate.now(), "Publ", "/path",
                 List.of(), List.of()
         );
-        given(publicationService.getPublicationById(any())).willReturn(Optional.of(publication));
+        given(publicationService.findById(any())).willReturn(Optional.of(publication));
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/publication/{id}", 1L))
                 .andExpect(status().isOk())
@@ -50,7 +50,7 @@ class PublicationControllerTest {
     @Test
     @DisplayName("GET /publication/{id} NOT FOUND")
     void getPublicationPageNotFound() throws Exception {
-        given(publicationService.getPublicationById(any())).willReturn(Optional.empty());
+        given(publicationService.findById(any())).willReturn(Optional.empty());
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/publication/{id}", 1L))
                 .andExpect(status().isOk())

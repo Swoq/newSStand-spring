@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -33,7 +34,7 @@ class GenreServiceTest {
         );
         doReturn(expect).when(genreRepository).findAll();
 
-        List<Genre> received = genreService.getAllGenres();
+        List<Genre> received = genreService.findAll();
         Assertions.assertEquals(4, received.size(), "getAllGenres should return 4 genres");
     }
 
@@ -48,7 +49,7 @@ class GenreServiceTest {
         List<Long> longs = List.of(1L, 2L, 3L, 4L);
         doReturn(expected).when(genreRepository).findAllByGenreIdIn(longs);
 
-        List<Genre> received = genreService.getAllGenresByIds(longs);
+        List<Genre> received = genreService.findAllByIds(longs);
         Assertions.assertEquals(4, received.size(), "getAllGenresByIds should return 4 genres");
     }
 
@@ -58,7 +59,7 @@ class GenreServiceTest {
 
         ArgumentCaptor<Genre> genreArgumentCaptor = ArgumentCaptor.forClass(Genre.class);
         doReturn(genre).when(genreRepository).save(genreArgumentCaptor.capture());
-        genreService.addNewGenre(genre);
+        genreService.save(genre);
 
         Genre capturedGenre = genreArgumentCaptor.getValue();
         assertThat(capturedGenre).isEqualTo(genre);

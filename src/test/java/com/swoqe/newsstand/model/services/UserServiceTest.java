@@ -69,7 +69,7 @@ class UserServiceTest {
 
         given(repository.findById(id)).willReturn(Optional.of(user));
 
-        final Optional<User> expected = service.getUserById(id);
+        final Optional<User> expected = service.findById(id);
         assertThat(expected).isNotNull();
     }
 

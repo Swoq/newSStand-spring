@@ -15,39 +15,35 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 @Log4j2
 class GlobalDefaultExceptionHandler {
-  public static final String DEFAULT_ERROR_VIEW = "error";
+    public static final String DEFAULT_ERROR_VIEW = "error";
+    public static final String NOT_FOUND_ERROR_MSG = "The page you requested was not found.";
+    public static final String INTERNAL_ERROR_MSG = "Sorry, we have some problems with our site. We will establish connection as soon as possible.";
 
-  public static final String NOT_FOUND_ERROR_MSG = "The page you requested was not found.";
-  public static final String OUTER_ERROR_MSG = "There are some problems on your side. Contact us and we will try to help you.";
-  public static final String INTERNAL_ERROR_MSG = "Sorry, we have some problems with our site. We will establish connection as soon as possible.";
-  public static final String UNDEFINED_ERROR_MSG = "Sorry, undefined error appeared.";
+    @ExceptionHandler(value = ResponseStatusException.class)
+    public ModelAndView defaultErrorHandler(HttpServletRequest req, ResponseStatusException e) {
+        log.error(e);
+        int code = e.getRawStatusCode();
 
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("url", req.getRequestURL());
+        mav.addObject("message", e.getReason());
+        mav.addObject("statusCode", code);
+        mav.setViewName(DEFAULT_ERROR_VIEW);
+        return mav;
+    }
 
-  @ExceptionHandler(value = ResponseStatusException.class)
-  public ModelAndView defaultErrorHandler(HttpServletRequest req, ResponseStatusException e) throws Exception {
-    log.error(e);
-    int code = e.getRawStatusCode();
+    @ExceptionHandler(value = Exception.class)
+    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
+        ModelAndView mav = new ModelAndView();
+        if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null)
+            throw e;
 
-    ModelAndView mav = new ModelAndView();
-    mav.addObject("url", req.getRequestURL());
-    mav.addObject("message", e.getReason());
-    mav.addObject("statusCode", code);
-    mav.setViewName(DEFAULT_ERROR_VIEW);
-    return mav;
-  }
+        if (e instanceof MethodArgumentTypeMismatchException)
+            return this.defaultErrorHandler(req, new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_ERROR_MSG));
 
-  @ExceptionHandler(value = Exception.class)
-  public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
-    ModelAndView mav = new ModelAndView();
-    if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null)
-      throw e;
-
-    if(e instanceof MethodArgumentTypeMismatchException)
-      return this.defaultErrorHandler(req, new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_ERROR_MSG));
-
-    e.printStackTrace();
-    log.error(e);
-    mav.addObject("message", INTERNAL_ERROR_MSG);
-    return mav;
-  }
+        e.printStackTrace();
+        log.error(e);
+        mav.addObject("message", INTERNAL_ERROR_MSG);
+        return mav;
+    }
 }

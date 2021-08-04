@@ -62,8 +62,8 @@ class CatalogControllerTest {
     @DisplayName("GET /catalog")
     void loadAllPublicationsByDefault() throws Exception {
         Page<Publication> page = new PageImpl<>(publications);
-        given(publicationService.getAllPublications(any())).willReturn(page);
-        given(genreService.getAllGenres()).willReturn(genres);
+        given(publicationService.findAll(any())).willReturn(page);
+        given(genreService.findAll()).willReturn(genres);
 
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/catalog").flashAttr("info", ""))
@@ -78,8 +78,8 @@ class CatalogControllerTest {
     @DisplayName("GET /catalog?page=1&size=5")
     void loadAllPublicationsWithPageAndSize() throws Exception {
         Page<Publication> page = new PageImpl<>(publications);
-        given(publicationService.getAllPublications(any())).willReturn(page);
-        given(genreService.getAllGenres()).willReturn(genres);
+        given(publicationService.findAll(any())).willReturn(page);
+        given(genreService.findAll()).willReturn(genres);
 
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/catalog")
@@ -97,8 +97,8 @@ class CatalogControllerTest {
     @DisplayName("GET /catalog?page=1&size=5&d=asc&sortBy=title")
     void loadAllPublicationsWithPageAndSizeAndDirectionAndSortBy() throws Exception {
         Page<Publication> page = new PageImpl<>(publications);
-        given(publicationService.getAllPublications(any())).willReturn(page);
-        given(genreService.getAllGenres()).willReturn(genres);
+        given(publicationService.findAll(any())).willReturn(page);
+        given(genreService.findAll()).willReturn(genres);
 
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(
@@ -121,9 +121,9 @@ class CatalogControllerTest {
         Page<Publication> page = new PageImpl<>(publications);
         List<Long> ids = genres.stream()
                 .map(Genre::getGenreId).collect(Collectors.toList());
-        given(publicationService.getAllPublicationsByGenres(any(), any())).willReturn(page);
-        given(genreService.getAllGenresByIds(ids)).willReturn(genres);
-        given(genreService.getAllGenres()).willReturn(genres);
+        given(publicationService.findAllByGenres(any(), any())).willReturn(page);
+        given(genreService.findAllByIds(ids)).willReturn(genres);
+        given(genreService.findAll()).willReturn(genres);
 
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(
@@ -150,9 +150,9 @@ class CatalogControllerTest {
         Page<Publication> page = new PageImpl<>(publications);
         List<Long> ids = genres.stream()
                 .map(Genre::getGenreId).collect(Collectors.toList());
-        given(publicationService.getAllPublicationsByGenres(any(), any())).willReturn(page);
-        given(genreService.getAllGenresByIds(ids)).willReturn(genres);
-        given(genreService.getAllGenres()).willReturn(genres);
+        given(publicationService.findAllByGenres(any(), any())).willReturn(page);
+        given(genreService.findAllByIds(ids)).willReturn(genres);
+        given(genreService.findAll()).willReturn(genres);
 
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(
@@ -178,8 +178,8 @@ class CatalogControllerTest {
     @DisplayName("GET /catalog?page=1&size=5&d=asc&sortBy=title&title=test")
     void loadAllPublicationsWithPageAndSizeAndDirectionAndSortByAndTitle() throws Exception {
         Page<Publication> page = new PageImpl<>(publications);
-        given(publicationService.getAllPublicationsByName(eq("test"), any())).willReturn(page);
-        given(genreService.getAllGenres()).willReturn(genres);
+        given(publicationService.findAllByTitle(eq("test"), any())).willReturn(page);
+        given(genreService.findAll()).willReturn(genres);
 
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(

@@ -36,7 +36,7 @@ class AccountControllerTest {
     @DisplayName("GET /user/account")
     void getAccountPage() throws Exception {
         User user = new User("f", "f", "fas", UserRole.COMMON_USER, "email@gmailc.com");
-        given(userService.getUserById(any())).willReturn(Optional.of(user));
+        given(userService.findById(any())).willReturn(Optional.of(user));
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/user/account").flashAttr("information", ""))
                 .andExpect(status().isOk())
@@ -47,7 +47,7 @@ class AccountControllerTest {
     @WithMockUser(value = "common", authorities = "COMMON_USER")
     @DisplayName("GET /user/account THROW")
     void shouldThrowNotFound() throws Exception {
-        given(userService.getUserById(any())).willReturn(Optional.empty());
+        given(userService.findById(any())).willReturn(Optional.empty());
         MediaType textHtml = new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8);
         mockMvc.perform(get("/user/account"))
                 .andExpect(status().isOk())
